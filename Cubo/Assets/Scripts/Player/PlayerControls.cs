@@ -15,11 +15,11 @@ public class PlayerControls : MonoBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
-        if (this.gameObject.name.Equals("Player1"))
+        if (this.gameObject.name.Equals("red_cubo_bot"))
         {
             jumpKey = p1JumpKey;
         } else
-            if (this.gameObject.name.Equals("Player2"))
+            if (this.gameObject.name.Equals("blue_cubo_bot"))
         {
             jumpKey = p2JumpKey;
         }
