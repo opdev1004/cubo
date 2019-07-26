@@ -13,17 +13,13 @@ public class PlayerMovement : MonoBehaviour
 
     //jumping
     public float jumpForce = 3.5f; //jump force per second
-    public float jumpDuration = 0.6f; //jump duration in seconds
+    public bool isJumping { get; private set; }
+    bool startJump;
+    Vector3 previousJumpPosition;
 
     Vector3 m_Movement;
     Quaternion m_Rotation = Quaternion.identity;
-    
-    float jumpAccel;
-    public bool isJumping { get; private set; }
-    bool startJump;
-
-    Vector3 previousJumpPosition;
-
+ 
     // Start is called before the first frame update
     void Start()
     {
