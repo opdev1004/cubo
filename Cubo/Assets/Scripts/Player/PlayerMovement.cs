@@ -12,21 +12,25 @@ public class PlayerMovement : MonoBehaviour
     public float movementSpeed = 1.0f;
 
     //jumping
-    public float jumpForce = 10.0f; //jump force per second
-    public float jumpDuration = 0.5f; //jump duration in seconds
+    public float jumpForce = 3.5f; //jump force per second
+    public float jumpDuration = 0.6f; //jump duration in seconds
 
     Vector3 m_Movement;
     Quaternion m_Rotation = Quaternion.identity;
     
-    float jumpTime;
+    float jumpAccel;
     public bool isJumping { get; private set; }
+    bool startJump;
+
+    Vector3 previousJumpPosition;
 
     // Start is called before the first frame update
     void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_BoxCollider = GetComponent<BoxCollider>();
-        jumpTime = 0f;
+
+        previousJumpPosition = new Vector3(0f, 0f, 0f);
     }
 
     /**
@@ -62,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     //runs every frame
     void Update()
     {
-        //
+    
     }
 
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
@@ -71,22 +75,22 @@ public class PlayerMovement : MonoBehaviour
         //check if the player is standing on a solid object (for cube shaped objects)
          if (Physics.BoxCast(m_Rigidbody.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), Vector3.down, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
          {
-            Debug.Log("jump");
             isJumping = true;
-            jumpTime = 0.5f;
+            startJump = true;
          }
     }
-    
+
     //Moves the character up while it is jumping.
     void Jump()
     {
         if (isJumping)
         {
-            if (jumpTime > 0)
+            //checks if the player is still gaining height or if player is starting a jump
+            if (!Mathf.Approximately(m_Rigidbody.position.y, previousJumpPosition.y) && m_Rigidbody.position.y > previousJumpPosition.y || startJump)
             {
-                Vector3 jumpvector = new Vector3(0, jumpForce, 0);
-                m_Rigidbody.MovePosition(m_Rigidbody.position + jumpvector * movementSpeed * Time.deltaTime);
-                jumpTime -= Time.deltaTime;
+                previousJumpPosition = m_Rigidbody.position;
+                m_Rigidbody.MovePosition(previousJumpPosition + new Vector3(0, jumpForce, 0) * Time.deltaTime);
+                startJump = false;
             }
             else
             {
