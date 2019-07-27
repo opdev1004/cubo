@@ -35,34 +35,8 @@ public class PlayerMovement : MonoBehaviour
 	* By default it is called exactly 50 times every second.
 	*/
     void FixedUpdate()
-    {
-        //Check for movement
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        m_Movement.Set(horizontal, 0f, vertical);
-        m_Movement.Normalize();
-
-        bool hasHorizontalInput = !Mathf.Approximately(horizontal, 0f);
-        bool hasVerticalInput = !Mathf.Approximately(vertical, 0f);
-        bool isWalking = hasHorizontalInput || hasVerticalInput;
-
-        if (isWalking)
-        {
-            Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
-            m_Rotation = Quaternion.LookRotation(desiredForward);
-
-            m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
-
-            m_Rigidbody.MoveRotation(m_Rotation);
-        }
+    { 
         Jump();
-    }
-
-    //runs every frame
-    void Update()
-    {
-    
     }
 
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
@@ -93,5 +67,21 @@ public class PlayerMovement : MonoBehaviour
                 isJumping = false;
             }
         }
+    }
+
+    public void Movement(string uInputVertical, string uInputHorizontal)
+    {
+        float vertical = Input.GetAxis(uInputVertical); 
+        float horizontal = Input.GetAxis(uInputHorizontal);
+
+        m_Movement.Set(horizontal, 0f, vertical);
+        m_Movement.Normalize();
+
+        Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
+        m_Rotation = Quaternion.LookRotation(desiredForward);
+
+        m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
+
+        m_Rigidbody.MoveRotation(m_Rotation);
     }
 }
