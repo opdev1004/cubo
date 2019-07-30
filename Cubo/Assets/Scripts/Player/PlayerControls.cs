@@ -5,11 +5,17 @@ using UnityEngine;
 public class PlayerControls : MonoBehaviour
 {
     PlayerMovement playerMovement;
+    PlayerSkills playerSkills;
     
     //jump controls
     private List<KeyCode> p1JumpKey = new List<KeyCode> { KeyCode.Space, KeyCode.Joystick1Button0 };
     private List<KeyCode> p2JumpKey = new List<KeyCode> { KeyCode.RightControl, KeyCode.Joystick2Button0 };
     private List<KeyCode> jumpKey;
+
+    //dash controls
+    private List<KeyCode> p1DashKey = new List<KeyCode> { KeyCode.LeftShift, KeyCode.Joystick1Button2 };
+    private List<KeyCode> p2DashKey = new List<KeyCode> { KeyCode.RightShift, KeyCode.Joystick2Button2 };
+    private List<KeyCode> dashKey;
 
     //references movement controls in the unity input system found in project settings
     private const string P1VerticalAxis = "P1Vertical";
@@ -25,13 +31,18 @@ public class PlayerControls : MonoBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        playerSkills = GetComponent<PlayerSkills>();
+
+        //sets the correct controls for the player
         if (this.gameObject.name.Equals(PlayerOneName))
         {
             jumpKey = p1JumpKey;
+            dashKey = p1DashKey;
         } else
             if (this.gameObject.name.Equals(PlayerTwoName))
         {
             jumpKey = p2JumpKey;
+            dashKey = p2DashKey;
         }
     }
 
@@ -58,13 +69,33 @@ public class PlayerControls : MonoBehaviour
         //check for jump key
         if (!playerMovement.isJumping)
         {
-            foreach (KeyCode key in jumpKey)
+            if (KeyIsPressed(jumpKey))
             {
-                if (Input.GetKeyDown(key))
-                {
-                    playerMovement.JumpStart();
-                }
+                playerMovement.JumpStart();
             }
         }
+
+        //check for dash key
+        if (!playerSkills.dashIsOnCooldown)
+        {
+            if (KeyIsPressed(dashKey))
+            {
+                playerSkills.StartDashCooldown();
+                playerMovement.DashStart();
+            }
+        }   
+    }
+
+    //returns true if a key for a given control is pressed
+    private bool KeyIsPressed(List<KeyCode> keys)
+    {
+        foreach (KeyCode key in keys)
+        {
+            if (Input.GetKeyDown(key))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

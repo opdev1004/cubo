@@ -12,14 +12,21 @@ public class PlayerMovement : MonoBehaviour
     public float movementSpeed = 1.0f;
 
     //jumping
-    public float jumpForce = 3.5f; //jump force per second
+    public float jumpForce = 3.5f;
     public bool isJumping { get; private set; }
     bool startJump;
     Vector3 previousJumpPosition;
 
+    //movement
     Vector3 m_Movement;
     Quaternion m_Rotation = Quaternion.identity;
- 
+    private bool movementLocked;
+
+    //dash
+    public float dashForce = 3.5f;
+    private float currentDashTime = 0f;
+    public float dashTime = 3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +44,10 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     { 
         Jump();
+        if (currentDashTime > 0f)
+        {
+            Dash();
+        }
     }
 
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
@@ -71,17 +82,41 @@ public class PlayerMovement : MonoBehaviour
 
     public void Movement(string uInputVertical, string uInputHorizontal)
     {
-        float vertical = Input.GetAxis(uInputVertical); 
-        float horizontal = Input.GetAxis(uInputHorizontal);
+        if (!movementLocked)
+        {
+            float vertical = Input.GetAxis(uInputVertical); 
+            float horizontal = Input.GetAxis(uInputHorizontal);
 
-        m_Movement.Set(horizontal, 0f, vertical);
-        m_Movement.Normalize();
+            m_Movement.Set(horizontal, 0f, vertical);
+            m_Movement.Normalize();
 
-        Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
-        m_Rotation = Quaternion.LookRotation(desiredForward);
+            Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
+            m_Rotation = Quaternion.LookRotation(desiredForward);
 
-        m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
+            m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
 
-        m_Rigidbody.MoveRotation(m_Rotation);
+            m_Rigidbody.MoveRotation(m_Rotation);
+        }
+    }
+
+    public void DashStart()
+    {
+        currentDashTime = dashTime;
+        LockMovement(true);
+    }
+
+    private void Dash()
+    {
+        m_Rigidbody.MovePosition(m_Rigidbody.position + transform.forward * dashForce * movementSpeed * Time.deltaTime);
+        currentDashTime -= Time.deltaTime;
+        if(currentDashTime < 0)
+        {
+            LockMovement(false);
+        }
+    }
+
+    private void LockMovement(bool locked)
+    {
+        movementLocked = locked;
     }
 }

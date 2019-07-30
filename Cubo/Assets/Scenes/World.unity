@@ -300,6 +300,20 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1048932291}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &783071487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783071486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9e7d70c8a3e524db28b56b6a5ea4b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashCooldown: 2
+  dashIsOnCooldown: 0
 --- !u!65 &783071488
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -344,6 +358,8 @@ MonoBehaviour:
   turnSpeed: 20
   movementSpeed: 1
   jumpForce: 3.5
+  dashForce: 3.5
+  dashTime: 0.5
 --- !u!114 &783071491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +462,20 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1712591908}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1432634644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432634643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9e7d70c8a3e524db28b56b6a5ea4b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashCooldown: 2
+  dashIsOnCooldown: 0
 --- !u!54 &1432634645
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -490,6 +520,8 @@ MonoBehaviour:
   turnSpeed: 20
   movementSpeed: 1
   jumpForce: 3.5
+  dashForce: 3.5
+  dashTime: 0.5
 --- !u!114 &1432634648
 MonoBehaviour:
   m_ObjectHideFlags: 0
