@@ -20,12 +20,19 @@ public class PlayerMovement : MonoBehaviour
     //movement
     Vector3 m_Movement;
     Quaternion m_Rotation = Quaternion.identity;
-    private bool movementLocked;
+    public bool movementLocked { get; private set; }
 
     //dash
     public float dashForce = 3.5f;
     private float currentDashTime = 0f;
-    public float dashTime = 3f;
+    public float dashTime = 0.5f;
+
+    //dash collision
+    public float currentCollisionTime = 0f;
+    private Vector3 collisionForward;
+    private float collisionSpeed;
+    Rigidbody playerCollidedWith;
+    private bool collided;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +55,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Dash();
         }
+        if (currentCollisionTime > 0f)
+        {
+            Knockback();
+        }
+        MovementLock();
     }
 
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
@@ -61,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
          }
     }
 
-    //Moves the character up while it is jumping.
+    //Moves the character up while they are jumping.
     void Jump()
     {
         if (isJumping)
@@ -80,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //Moves the player using the controls specified in the unity control settings
     public void Movement(string uInputVertical, string uInputHorizontal)
     {
         if (!movementLocked)
@@ -99,24 +112,81 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //Run when you want the player to start dashing
     public void DashStart()
     {
         currentDashTime = dashTime;
-        LockMovement(true);
+        MovementLock();
     }
 
+    //causes the player to move forward quickly in the direction it is facing.
     private void Dash()
     {
         m_Rigidbody.MovePosition(m_Rigidbody.position + transform.forward * dashForce * movementSpeed * Time.deltaTime);
         currentDashTime -= Time.deltaTime;
-        if(currentDashTime < 0)
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        PlayerMovement hitPlayer = collision.gameObject.GetComponent<PlayerMovement>();
+
+        //checks for a collision with another player if dashing
+        if (currentDashTime > 0f && !(hitPlayer == null))
         {
-            LockMovement(false);
+            //checks if the collision is being handled by the other player
+            if (!hitPlayer.collided)
+            {
+                collided = true;
+                hitPlayer.currentCollisionTime = dashTime - hitPlayer.currentDashTime;
+                hitPlayer.MovementLock();
+                hitPlayer.collisionForward = transform.forward;
+
+                hitPlayer.collisionSpeed = movementSpeed * dashForce;
+
+                //checks if the other player was dashing during the collision.
+                if (hitPlayer.currentDashTime > 0)
+                {
+                    currentCollisionTime = hitPlayer.dashTime - currentDashTime;
+                    MovementLock();
+                    collisionForward = hitPlayer.transform.forward;
+
+                    collisionSpeed = hitPlayer.movementSpeed * hitPlayer.dashForce;
+                }
+
+                //End Dash Early
+                currentDashTime = 0f;
+                MovementLock();
+
+                hitPlayer.currentDashTime = 0f;
+                hitPlayer.MovementLock();
+            }
         }
     }
 
-    private void LockMovement(bool locked)
+    //Knocks back the player in the direction the colliding player was facing.
+    private void Knockback()
     {
-        movementLocked = locked;
+        m_Rigidbody.MovePosition(m_Rigidbody.position + (collisionForward * collisionSpeed * Time.deltaTime));
+        currentCollisionTime -= Time.deltaTime;
+
+        if (currentCollisionTime <= 0f)
+        {
+            collided = false;
+        }
+    }
+
+    //Enables movement if any timers that prevent movement are not running
+    private void MovementLock()
+    {
+        if (currentDashTime <= 0f && currentCollisionTime <= 0f)
+        {
+            movementLocked = false;
+            currentDashTime = 0f;
+            currentCollisionTime = 0f;
+        }
+        else
+        {
+            movementLocked = true;
+        }
     }
 }

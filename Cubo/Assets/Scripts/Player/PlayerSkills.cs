@@ -31,6 +31,7 @@ public class PlayerSkills : MonoBehaviour
         dashIsOnCooldown = true;
     }
 
+    //calculates the cooldown for dash
     private void RunDashCooldown()
     {
         if (dashCooldownTimer < 0f)

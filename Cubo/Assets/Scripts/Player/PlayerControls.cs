@@ -76,7 +76,7 @@ public class PlayerControls : MonoBehaviour
         }
 
         //check for dash key
-        if (!playerSkills.dashIsOnCooldown)
+        if (!playerSkills.dashIsOnCooldown && !playerMovement.movementLocked)
         {
             if (KeyIsPressed(dashKey))
             {

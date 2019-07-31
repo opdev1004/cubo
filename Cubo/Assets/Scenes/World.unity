@@ -360,6 +360,7 @@ MonoBehaviour:
   jumpForce: 3.5
   dashForce: 3.5
   dashTime: 0.5
+  currentCollisionTime: 0
 --- !u!114 &783071491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,6 +523,7 @@ MonoBehaviour:
   jumpForce: 3.5
   dashForce: 3.5
   dashTime: 0.5
+  currentCollisionTime: 0
 --- !u!114 &1432634648
 MonoBehaviour:
   m_ObjectHideFlags: 0
