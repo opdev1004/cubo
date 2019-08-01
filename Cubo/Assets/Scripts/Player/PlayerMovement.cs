@@ -159,6 +159,8 @@ public class PlayerMovement : MonoBehaviour
 
                 hitPlayer.currentDashTime = 0f;
                 hitPlayer.MovementLock();
+
+                collided = false;
             }
         }
     }
@@ -168,11 +170,6 @@ public class PlayerMovement : MonoBehaviour
     {
         m_Rigidbody.MovePosition(m_Rigidbody.position + (collisionForward * collisionSpeed * Time.deltaTime));
         currentCollisionTime -= Time.deltaTime;
-
-        if (currentCollisionTime <= 0f)
-        {
-            collided = false;
-        }
     }
 
     //Enables movement if any timers that prevent movement are not running
