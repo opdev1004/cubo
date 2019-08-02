@@ -28,10 +28,10 @@ public class PlayerMovement : MonoBehaviour
     public float dashTime = 0.5f;
 
     //dash collision
-    public float currentCollisionTime = 0f;
-    private Vector3 collisionForward;
-    private float collisionSpeed;
-    Rigidbody playerCollidedWith;
+    public float currentKnockbackTime = 0f;
+    private Vector3 knockbackForward;
+    private float knockbackSpeed;
+    private Rigidbody playerCollidedWith;
     private bool collided;
 
     // Start is called before the first frame update
@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Dash();
         }
-        if (currentCollisionTime > 0f)
+        if (currentKnockbackTime > 0f)
         {
             Knockback();
         }
@@ -126,10 +126,9 @@ public class PlayerMovement : MonoBehaviour
         currentDashTime -= Time.deltaTime;
     }
 
-    void OnCollisionStay(Collision collision)
+    //checks if the hit player meets the conditions for knockback and runs StartKnockback()
+    public void CheckAndRunKnockbackOnCollision(PlayerMovement hitPlayer)
     {
-        PlayerMovement hitPlayer = collision.gameObject.GetComponent<PlayerMovement>();
-
         //checks for a collision with another player if dashing
         if (currentDashTime > 0f && !(hitPlayer == null))
         {
@@ -137,49 +136,51 @@ public class PlayerMovement : MonoBehaviour
             if (!hitPlayer.collided)
             {
                 collided = true;
-                hitPlayer.currentCollisionTime = dashTime - hitPlayer.currentDashTime;
-                hitPlayer.MovementLock();
-                hitPlayer.collisionForward = transform.forward;
-
-                hitPlayer.collisionSpeed = movementSpeed * dashForce;
-
+                hitPlayer.StartKnockback(dashTime - hitPlayer.currentDashTime, transform.forward, movementSpeed * dashForce);
                 //checks if the other player was dashing during the collision.
                 if (hitPlayer.currentDashTime > 0)
                 {
-                    currentCollisionTime = hitPlayer.dashTime - currentDashTime;
-                    MovementLock();
-                    collisionForward = hitPlayer.transform.forward;
-
-                    collisionSpeed = hitPlayer.movementSpeed * hitPlayer.dashForce;
+                    StartKnockback(hitPlayer.dashTime - currentDashTime, hitPlayer.transform.forward, hitPlayer.movementSpeed * hitPlayer.dashForce);
                 }
-
-                //End Dash Early
-                currentDashTime = 0f;
-                MovementLock();
-
-                hitPlayer.currentDashTime = 0f;
-                hitPlayer.MovementLock();
-
+                DashCancel();
+                hitPlayer.DashCancel();
                 collided = false;
             }
         }
+    }
+    
+    //puts the player in the Knockback state.
+    public void StartKnockback(float knockbackTime, Vector3 direction, float speed)
+    {
+        currentKnockbackTime = knockbackTime;
+        MovementLock();
+        knockbackForward = direction;
+        knockbackSpeed = speed;
+    }
+
+    //Cancels the dash ability
+    private void DashCancel()
+    {
+        //End Dash Early
+        currentDashTime = 0f;
+        MovementLock();
     }
 
     //Knocks back the player in the direction the colliding player was facing.
     private void Knockback()
     {
-        m_Rigidbody.MovePosition(m_Rigidbody.position + (collisionForward * collisionSpeed * Time.deltaTime));
-        currentCollisionTime -= Time.deltaTime;
+        m_Rigidbody.MovePosition(m_Rigidbody.position + (knockbackForward * knockbackSpeed * Time.deltaTime));
+        currentKnockbackTime -= Time.deltaTime;
     }
 
     //Enables movement if any timers that prevent movement are not running
     private void MovementLock()
     {
-        if (currentDashTime <= 0f && currentCollisionTime <= 0f)
+        if (currentDashTime <= 0f && currentKnockbackTime <= 0f)
         {
             movementLocked = false;
             currentDashTime = 0f;
-            currentCollisionTime = 0f;
+            currentKnockbackTime = 0f;
         }
         else
         {
