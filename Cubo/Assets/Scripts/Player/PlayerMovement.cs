@@ -6,14 +6,14 @@ public class PlayerMovement : MonoBehaviour
 {
     //objects
     Rigidbody m_Rigidbody;
-    BoxCollider m_BoxCollider;
+    PlayerCollision playerCollision;
 
     public float turnSpeed = 20f; //turn speed in radians per second
     public float movementSpeed = 1.0f;
 
     //jumping
     public float jumpForce = 3.5f;
-    public bool isJumping { get; private set; }
+    public bool isJumpingUp { get; private set; }
     bool startJump;
     Vector3 previousJumpPosition;
 
@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_BoxCollider = GetComponent<BoxCollider>();
+        playerCollision = GetComponent<PlayerCollision>();
 
         previousJumpPosition = new Vector3(0f, 0f, 0f);
     }
@@ -67,10 +67,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!movementLocked)
         {
-            //check if the player is standing on a solid object (for cube shaped objects)
-            if (Physics.BoxCast(m_Rigidbody.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), Vector3.down, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
+            //check if the player is standing on a solid object
+            if (playerCollision.CollisionAt(Vector3.down))
             {
-                isJumping = true;
+                isJumpingUp = true;
                 startJump = true;
             }
         }
@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
     //Moves the character up while they are jumping.
     void Jump()
     {
-        if (isJumping)
+        if (isJumpingUp)
         {
             //checks if the player is still gaining height or if player is starting a jump
             if (!Mathf.Approximately(m_Rigidbody.position.y, previousJumpPosition.y) && m_Rigidbody.position.y > previousJumpPosition.y || startJump)
@@ -90,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                isJumping = false;
+                isJumpingUp = false;
             }
         }
     }

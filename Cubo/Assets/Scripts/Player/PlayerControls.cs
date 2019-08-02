@@ -67,7 +67,7 @@ public class PlayerControls : MonoBehaviour
     void Update()
     {
         //check for jump key
-        if (!playerMovement.isJumping)
+        if (!playerMovement.isJumpingUp)
         {
             if (KeyIsPressed(jumpKey))
             {
