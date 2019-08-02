@@ -65,12 +65,15 @@ public class PlayerMovement : MonoBehaviour
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
     public void JumpStart()
     {
-        //check if the player is standing on a solid object (for cube shaped objects)
-         if (Physics.BoxCast(m_Rigidbody.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), Vector3.down, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
-         {
-            isJumping = true;
-            startJump = true;
-         }
+        if (!movementLocked)
+        {
+            //check if the player is standing on a solid object (for cube shaped objects)
+            if (Physics.BoxCast(m_Rigidbody.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), Vector3.down, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
+            {
+                isJumping = true;
+                startJump = true;
+            }
+        }
     }
 
     //Moves the character up while they are jumping.
