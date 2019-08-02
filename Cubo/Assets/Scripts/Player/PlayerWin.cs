@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 //Checks if the player meets the requirements of winning the game.
 public class PlayerWin : MonoBehaviour
@@ -18,10 +19,19 @@ public class PlayerWin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Player wins if the player is the last on that meets the win condition.
+        //Player wins if the player is the last one that meets the win condition.
         if (winList.Contains(this) && winList.Count == 1)
         {
             Debug.Log("win condition met for " + gameObject.name);
+            Debug.Log("Game Restarting...");
+            SceneManager.LoadScene("World");
+        }
+
+        //Player is disqualified if they fall below the arena
+        if (rigidbody.position.y < -5f)
+        {
+            Debug.Log(gameObject.name + " fell and was disqualified.");
+            Disqualify();
         }
     }
 
