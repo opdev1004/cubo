@@ -24,7 +24,7 @@ public class PlayerWin : MonoBehaviour
         {
             Debug.Log("win condition met for " + gameObject.name);
             Debug.Log("Game Restarting...");
-            SceneManager.LoadScene("World");
+            SceneManager.LoadScene("MainMenu");
         }
 
         //Player is disqualified if they fall below the arena
