@@ -5,13 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuNavigation : MonoBehaviour
 {
+    public GameObject mainScreen;
+    public GameObject howToPlayScreen;
+
+    private void Start()
+    {
+        howToPlayScreen.SetActive(false);
+    }
+
     public void OnStartClick()
     {
         SceneManager.LoadScene("World");
     }
 
-    public void OnInstructionsClick()
+    public void OnInstructionsClick(GameObject from)
     {
-        Debug.Log("How to Play clicked");
+        ChangeMenu(from, howToPlayScreen);
+    }
+
+    public void OnClickMainMenu(GameObject from)
+    {
+        ChangeMenu(from, mainScreen);
+    }
+
+    private void ChangeMenu(GameObject from, GameObject to)
+    {
+        from.SetActive(false);
+        to.SetActive(true);
     }
 }
