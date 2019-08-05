@@ -12,7 +12,7 @@ public class PlayerSkills : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        UICooldown.instance.DashReady(true, gameObject.name);
     }
 
     // Update is called once per frame
@@ -29,6 +29,7 @@ public class PlayerSkills : MonoBehaviour
     {
         dashCooldownTimer = dashCooldown;
         dashIsOnCooldown = true;
+        UICooldown.instance.DashReady(false, gameObject.name);
     }
 
     //calculates the cooldown for dash
@@ -37,6 +38,7 @@ public class PlayerSkills : MonoBehaviour
         if (dashCooldownTimer < 0f)
         {
             dashIsOnCooldown = false;
+            UICooldown.instance.DashReady(true, gameObject.name);
         } else
         {
             dashCooldownTimer -= Time.deltaTime;
