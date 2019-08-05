@@ -9,12 +9,6 @@ public class PlayerSkills : MonoBehaviour
     public float dashCooldownTimer { get; private set; } = 0f;
     public bool dashIsOnCooldown;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -43,7 +37,8 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    public float GetCooldownAsPercent()
+    //Gets dash cooldown as percentage
+    public float GetDashCooldownAsPercent()
     {
         if (dashCooldownTimer <= 0f)
         {

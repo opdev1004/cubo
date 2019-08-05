@@ -196,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //Gets the knockback timer as a percentage for UI elements
     public float GetKnockbackProgressAsPercent()
     {
         if (currentKnockbackTime <= 0)

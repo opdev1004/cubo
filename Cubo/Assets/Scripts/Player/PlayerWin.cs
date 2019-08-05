@@ -8,6 +8,7 @@ public class PlayerWin : MonoBehaviour
 {
     Rigidbody rigidbody;
     List<PlayerWin> winList;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour
 {
+    //Script Objects
     PlayerMovement playerMovement;
     PlayerWin playerWin;
+
+    //Unity values for player
     BoxCollider m_BoxCollider;
     Rigidbody rigidbody;
 
@@ -18,6 +21,7 @@ public class PlayerCollision : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
     }
 
+    //Runs on collision with another object.
     void OnCollisionStay(Collision collision)
     {
         playerMovement.CheckAndRunKnockbackOnCollision(collision.gameObject.GetComponent<PlayerMovement>());

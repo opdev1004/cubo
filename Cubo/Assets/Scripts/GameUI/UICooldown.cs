@@ -5,16 +5,19 @@ using UnityEngine.UI;
 
 public class UICooldown : MonoBehaviour
 {
+    //Objects and UI elements linked through unity
     public Text p1Dash;
     public Text p2Dash;
     public GameObject playerOne;
     public GameObject playerTwo;
-    public static UICooldown instance;
-
-    float P1DashbarOriginal;
-    float P2DashbarOriginal;
     public Image P1UIDashRemaining;
     public Image P2UIDashRemaining;
+
+    //dash bar variables
+    float P1DashbarOriginal;
+    float P2DashbarOriginal;
+
+    public static UICooldown instance;
 
     private void Awake()
     {
@@ -26,9 +29,9 @@ public class UICooldown : MonoBehaviour
     {
         P1DashbarOriginal = P1UIDashRemaining.rectTransform.rect.width;
         P2DashbarOriginal = P2UIDashRemaining.rectTransform.rect.width;
-
     }
 
+    //Updates the status of the dash skill in the UI for the specified player
     public void DashReady(bool ready, string playerName, float percent)
     {
         if (playerName == playerOne.name)
@@ -42,6 +45,7 @@ public class UICooldown : MonoBehaviour
         }
     }
 
+    //Updates the dash text for the specified text field.
     void SetDashText(Text dashText, bool ready)
     {
         if (ready)
@@ -53,6 +57,7 @@ public class UICooldown : MonoBehaviour
         }
     }
 
+    //updates the dash bar in the UI
     void SetDashMeter(Image UIDashRemaining, float originalSize, float percent)
     {
 

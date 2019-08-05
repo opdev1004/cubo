@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    //Player Scripts
     PlayerMovement playerMovement;
     PlayerSkills playerSkills;
     
@@ -98,11 +99,9 @@ public class PlayerControls : MonoBehaviour
                 UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
             } else
             {
-                UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetCooldownAsPercent());
+                UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetDashCooldownAsPercent());
             }
-                
-        }
-          
+        } 
     }
 
     //returns true if a key for a given control is pressed
