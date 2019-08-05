@@ -11,19 +11,34 @@ public class UICooldown : MonoBehaviour
     public GameObject playerTwo;
     public static UICooldown instance;
 
+    float P1DashbarOriginal;
+    float P2DashbarOriginal;
+    public Image P1UIDashRemaining;
+    public Image P2UIDashRemaining;
+
     private void Awake()
     {
         instance = this;
     }
 
-    public void DashReady(bool ready, string playerName)
+    // Start is called before the first frame update
+    void Start()
+    {
+        P1DashbarOriginal = P1UIDashRemaining.rectTransform.rect.width;
+        P2DashbarOriginal = P2UIDashRemaining.rectTransform.rect.width;
+
+    }
+
+    public void DashReady(bool ready, string playerName, float percent)
     {
         if (playerName == playerOne.name)
         {
             SetDashText(p1Dash, ready);
+            SetDashMeter(P1UIDashRemaining, P1DashbarOriginal, percent);
         } else if (playerName == playerTwo.name)
         {
             SetDashText(p2Dash, ready);
+            SetDashMeter(P2UIDashRemaining, P2DashbarOriginal, percent);
         }
     }
 
@@ -36,5 +51,11 @@ public class UICooldown : MonoBehaviour
         {
             dashText.text = "Dash: Not Ready";
         }
+    }
+
+    void SetDashMeter(Image UIDashRemaining, float originalSize, float percent)
+    {
+
+        UIDashRemaining.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * percent);
     }
 }

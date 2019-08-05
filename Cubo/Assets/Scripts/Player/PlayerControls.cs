@@ -76,14 +76,26 @@ public class PlayerControls : MonoBehaviour
         }
 
         //check for dash key
-        if (!playerSkills.dashIsOnCooldown && !playerMovement.movementLocked)
+        if (!playerSkills.dashIsOnCooldown)
         {
-            if (KeyIsPressed(dashKey))
+            if (!playerMovement.movementLocked)
             {
-                playerSkills.StartDashCooldown();
-                playerMovement.DashStart();
+                UICooldown.instance.DashReady(true, gameObject.name, 1f);
+                if (KeyIsPressed(dashKey))
+                {
+                    playerSkills.StartDashCooldown();
+                    playerMovement.DashStart();
+                }
             }
-        }   
+            else
+            {
+                UICooldown.instance.DashReady(false, gameObject.name, 0.5f);
+            }
+        } else
+        {
+            UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetCooldownAsPercent());
+        }
+          
     }
 
     //returns true if a key for a given control is pressed

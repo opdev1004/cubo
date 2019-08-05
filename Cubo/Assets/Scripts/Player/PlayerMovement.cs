@@ -190,4 +190,14 @@ public class PlayerMovement : MonoBehaviour
             movementLocked = true;
         }
     }
+
+    public float GetDashProgressAsPercent()
+    {
+        if (currentDashTime <= 0)
+        {
+            return 0f;
+        }
+
+        return currentDashTime / dashTime;
+    }
 }
