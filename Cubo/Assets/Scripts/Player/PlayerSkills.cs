@@ -6,7 +6,7 @@ public class PlayerSkills : MonoBehaviour
 {
     //dash skill
     public float dashCooldown = 2f;
-    private float dashCooldownTimer = 0f;
+    public float dashCooldownTimer { get; private set; } = 0f;
     public bool dashIsOnCooldown;
 
     // Start is called before the first frame update

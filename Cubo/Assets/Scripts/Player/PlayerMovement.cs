@@ -28,7 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public float dashTime = 0.5f;
 
     //dash collision
-    public float currentKnockbackTime = 0f;
+    public float currentKnockbackTime { get; private set; } = 0f;
     private Vector3 knockbackForward;
     private float knockbackSpeed;
     private Rigidbody playerCollidedWith;
@@ -139,11 +139,16 @@ public class PlayerMovement : MonoBehaviour
             if (!hitPlayer.collided)
             {
                 collided = true;
-                hitPlayer.StartKnockback(dashTime - hitPlayer.currentDashTime, transform.forward, movementSpeed * dashForce);
+
                 //checks if the other player was dashing during the collision.
                 if (hitPlayer.currentDashTime > 0)
                 {
-                    StartKnockback(hitPlayer.dashTime - currentDashTime, hitPlayer.transform.forward, hitPlayer.movementSpeed * hitPlayer.dashForce);
+                    hitPlayer.StartKnockback(dashTime - hitPlayer.currentDashTime, (transform.forward - hitPlayer.transform.forward) / 2f, movementSpeed * dashForce);
+
+                    StartKnockback(hitPlayer.dashTime - currentDashTime, (hitPlayer.transform.forward - transform.forward) / 2, hitPlayer.movementSpeed * hitPlayer.dashForce);
+                } else
+                {
+                    hitPlayer.StartKnockback(dashTime - hitPlayer.currentDashTime, transform.forward, movementSpeed * dashForce);
                 }
                 DashCancel();
                 hitPlayer.DashCancel();
@@ -191,13 +196,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public float GetDashProgressAsPercent()
+    public float GetKnockbackProgressAsPercent()
     {
-        if (currentDashTime <= 0)
+        if (currentKnockbackTime <= 0)
         {
             return 0f;
         }
 
-        return currentDashTime / dashTime;
+        return 1 - (currentKnockbackTime / dashTime);
     }
 }

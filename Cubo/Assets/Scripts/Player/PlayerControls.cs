@@ -89,11 +89,18 @@ public class PlayerControls : MonoBehaviour
             }
             else
             {
-                UICooldown.instance.DashReady(false, gameObject.name, 0.5f);
+                UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
             }
         } else
         {
-            UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetCooldownAsPercent());
+            if (playerMovement.currentKnockbackTime > playerSkills.dashCooldownTimer)
+            {
+                UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
+            } else
+            {
+                UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetCooldownAsPercent());
+            }
+                
         }
           
     }
