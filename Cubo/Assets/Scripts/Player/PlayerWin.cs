@@ -20,19 +20,20 @@ public class PlayerWin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Player wins if the player is the last one that meets the win condition.
-        if (winList.Contains(this) && winList.Count == 1)
+        if (!UIPopupMenu.instance.winDialogIsPresent)
         {
-            Debug.Log("win condition met for " + gameObject.name);
-            Debug.Log("Game Restarting...");
-            SceneManager.LoadScene("MainMenu");
-        }
+            //Player wins if the player is the last one that meets the win condition.
+            if (winList.Contains(this) && winList.Count == 1)
+            {
+                UIPopupMenu.instance.DisplayGameOverMenu(gameObject.name);
+            }
 
-        //Player is disqualified if they fall below the arena
-        if (rigidbody.position.y < -5f)
-        {
-            Debug.Log(gameObject.name + " fell and was disqualified.");
-            Disqualify();
+            //Player is disqualified if they fall below the arena
+            if (rigidbody.position.y < -5f)
+            {
+                Debug.Log(gameObject.name + " fell and was disqualified.");
+                Disqualify();
+            }
         }
     }
 

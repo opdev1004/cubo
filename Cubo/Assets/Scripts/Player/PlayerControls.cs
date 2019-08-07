@@ -67,41 +67,47 @@ public class PlayerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //check for jump key
-        if (!playerMovement.isJumpingUp)
+        //controls that don't run while the game is paused go here.
+        if (Time.timeScale != 0)
         {
-            if (KeyIsPressed(jumpKey))
+            //check for jump key
+            if (!playerMovement.isJumpingUp)
             {
-                playerMovement.JumpStart();
-            }
-        }
-
-        //check for dash key
-        if (!playerSkills.dashIsOnCooldown)
-        {
-            if (!playerMovement.movementLocked)
-            {
-                UICooldown.instance.DashReady(true, gameObject.name, 1f);
-                if (KeyIsPressed(dashKey))
+                if (KeyIsPressed(jumpKey))
                 {
-                    playerSkills.StartDashCooldown();
-                    playerMovement.DashStart();
+                    playerMovement.JumpStart();
+                }
+            }
+
+            //check for dash key
+            if (!playerSkills.dashIsOnCooldown)
+            {
+                if (!playerMovement.movementLocked)
+                {
+                    UICooldown.instance.DashReady(true, gameObject.name, 1f);
+                    if (KeyIsPressed(dashKey))
+                    {
+                        playerSkills.StartDashCooldown();
+                        playerMovement.DashStart();
+                    }
+                }
+                else
+                {
+                    UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
                 }
             }
             else
             {
-                UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
+                if (playerMovement.currentKnockbackTime > playerSkills.dashCooldownTimer)
+                {
+                    UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
+                }
+                else
+                {
+                    UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetDashCooldownAsPercent());
+                }
             }
-        } else
-        {
-            if (playerMovement.currentKnockbackTime > playerSkills.dashCooldownTimer)
-            {
-                UICooldown.instance.DashReady(false, gameObject.name, playerMovement.GetKnockbackProgressAsPercent());
-            } else
-            {
-                UICooldown.instance.DashReady(false, gameObject.name, playerSkills.GetDashCooldownAsPercent());
-            }
-        } 
+        }
     }
 
     //returns true if a key for a given control is pressed
