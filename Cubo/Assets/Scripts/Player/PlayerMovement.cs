@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
 
 	// Movement Lock
 	private bool movementLock = false;	 // Flag for stopping movement
-
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -129,6 +129,17 @@ public class PlayerMovement : MonoBehaviour
 				m_Rigidbody.MoveRotation(m_Rotation);
 
 				origin = m_Rigidbody.position;		
+			}
+			else {
+				float vertical = Input.GetAxis(uInputVertical); 
+				float horizontal = Input.GetAxis(uInputHorizontal);
+
+				m_Movement.Set(horizontal, 0f, vertical);
+				m_Movement.Normalize();
+
+				Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
+				m_Rotation = Quaternion.LookRotation(desiredForward);
+				m_Rigidbody.MoveRotation(m_Rotation);
 			}
         }
     }
