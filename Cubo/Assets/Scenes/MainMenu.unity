@@ -1429,7 +1429,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: "Player 1 Controls:\n\nMovement: W A S D\nJump: Spacebar\nDash: Left Shift\n\nPlayer
     2 Controls:\n\nMovement: \u2191 \u2190 \u2193 \u2192\nJump: Right Ctrl\nDash:
-    Left Shift"
+    Right Shift"
 --- !u!222 &1754286120
 CanvasRenderer:
   m_ObjectHideFlags: 0
