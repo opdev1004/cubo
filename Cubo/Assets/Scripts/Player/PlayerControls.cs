@@ -7,6 +7,7 @@ public class PlayerControls : MonoBehaviour
     //Player Scripts
     PlayerMovement playerMovement;
     PlayerSkills playerSkills;
+	PlayerAudioSoundManager sm;
     
     //jump controls
     private List<KeyCode> p1JumpKey = new List<KeyCode> { KeyCode.Space, KeyCode.Joystick1Button0 };
@@ -33,6 +34,7 @@ public class PlayerControls : MonoBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerSkills = GetComponent<PlayerSkills>();
+		sm = transform.Find("Audio Source").GetComponent<PlayerAudioSoundManager>();
 
         //sets the correct controls for the player
         if (this.gameObject.name.Equals(PlayerOneName))
@@ -89,6 +91,7 @@ public class PlayerControls : MonoBehaviour
                     {
 						playerMovement.LockMovement(true);
 						playerMovement.StartShaking();
+						sm.PlayCharging();
                     }
 					if (KeyIsReleased(dashKey))
 					{
@@ -97,6 +100,7 @@ public class PlayerControls : MonoBehaviour
 						playerMovement.LockMovement(false);
 						playerSkills.StartDashCooldown();
                         playerMovement.DashStart();
+						sm.PlayBeam();
 					}
                 }
                 else
