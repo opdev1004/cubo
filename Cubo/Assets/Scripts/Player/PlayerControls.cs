@@ -84,12 +84,20 @@ public class PlayerControls : MonoBehaviour
             {
                 if (!playerMovement.movementLocked)
                 {
-                    UICooldown.instance.DashReady(true, gameObject.name, 1f);
+                    UICooldown.instance.DashReady(true, this.gameObject.name, 1f);
                     if (KeyIsPressed(dashKey))
                     {
-                        playerSkills.StartDashCooldown();
-                        playerMovement.DashStart();
+						playerMovement.LockMovement(true);
+						playerMovement.StartShaking();
                     }
+					if (KeyIsReleased(dashKey))
+					{
+						playerMovement.OffShake();
+						playerMovement.MoveToOrigin();
+						playerMovement.LockMovement(false);
+						playerSkills.StartDashCooldown();
+                        playerMovement.DashStart();
+					}
                 }
                 else
                 {
@@ -122,4 +130,18 @@ public class PlayerControls : MonoBehaviour
         }
         return false;
     }
+
+	// return true if a key for a given control is released
+	private bool KeyIsReleased(List<KeyCode> keys)
+    {
+        foreach (KeyCode key in keys)
+        {
+            if (Input.GetKeyUp(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

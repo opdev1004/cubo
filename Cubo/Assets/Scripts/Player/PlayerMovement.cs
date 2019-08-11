@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     public float dashForce = 3.5f;
     private float currentDashTime = 0f;
     public float dashTime = 0.5f;
+	private bool onDash = false; // Since the condition is being used commonly, so just adding it as a flag
 
     //dash collision
     public float currentKnockbackTime { get; private set; } = 0f;
@@ -33,6 +34,14 @@ public class PlayerMovement : MonoBehaviour
     private float knockbackSpeed;
     private Rigidbody playerCollidedWith;
     private bool collided;
+
+	// shaking
+	public float shakeForce = 10.0f;
+	private Vector3 origin = Vector3.zero;
+	private bool ShakeOn = false;	// Flag for checking if it is shaking state
+
+	// Movement Lock
+	private bool movementLock = false;	 // Flag for stopping movement
 
     // Start is called before the first frame update
     void Start()
@@ -59,7 +68,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Knockback();
         }
-        MovementLock();
+		if (ShakeOn)
+		{
+			Shaking();
+		}
+        LockMovementDK();
     }
 
     //causes the player to start jumping. use only after checking for player jumps as box cast is resource intensive.
@@ -100,26 +113,32 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!movementLocked)
         {
-            float vertical = Input.GetAxis(uInputVertical); 
-            float horizontal = Input.GetAxis(uInputHorizontal);
+			if(!movementLock)
+			{
+				float vertical = Input.GetAxis(uInputVertical); 
+				float horizontal = Input.GetAxis(uInputHorizontal);
 
-            m_Movement.Set(horizontal, 0f, vertical);
-            m_Movement.Normalize();
+				m_Movement.Set(horizontal, 0f, vertical);
+				m_Movement.Normalize();
 
-            Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
-            m_Rotation = Quaternion.LookRotation(desiredForward);
+				Vector3 desiredForward = Vector3.RotateTowards(transform.forward, m_Movement, turnSpeed * Time.deltaTime, 0f);
+				m_Rotation = Quaternion.LookRotation(desiredForward);
 
-            m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
+				m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * movementSpeed * Time.deltaTime);
 
-            m_Rigidbody.MoveRotation(m_Rotation);
+				m_Rigidbody.MoveRotation(m_Rotation);
+
+				origin = m_Rigidbody.position;		
+			}
         }
     }
 
     //Run when you want the player to start dashing
     public void DashStart()
     {
+		onDash = true;
         currentDashTime = dashTime;
-        MovementLock();
+        LockMovementDK();
     }
 
     //causes the player to move forward quickly in the direction it is facing.
@@ -127,6 +146,10 @@ public class PlayerMovement : MonoBehaviour
     {
         m_Rigidbody.MovePosition(m_Rigidbody.position + transform.forward * dashForce * movementSpeed * Time.deltaTime);
         currentDashTime -= Time.deltaTime;
+		if(!(currentDashTime > 0))
+		{
+			onDash = false;
+		}
     }
 
     //checks if the hit player meets the conditions for knockback and runs StartKnockback()
@@ -141,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
                 collided = true;
 
                 //checks if the other player was dashing during the collision.
-                if (hitPlayer.currentDashTime > 0)
+                if (hitPlayer.onDash == true)
                 {
                     hitPlayer.StartKnockback(dashTime - hitPlayer.currentDashTime, (transform.forward - hitPlayer.transform.forward) / 2f, movementSpeed * dashForce);
 
@@ -161,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
     public void StartKnockback(float knockbackTime, Vector3 direction, float speed)
     {
         currentKnockbackTime = knockbackTime;
-        MovementLock();
+        LockMovementDK();
         knockbackForward = direction;
         knockbackSpeed = speed;
     }
@@ -171,7 +194,8 @@ public class PlayerMovement : MonoBehaviour
     {
         //End Dash Early
         currentDashTime = 0f;
-        MovementLock();
+        LockMovementDK();
+		onDash = false;
     }
 
     //Knocks back the player in the direction the colliding player was facing.
@@ -179,10 +203,11 @@ public class PlayerMovement : MonoBehaviour
     {
         m_Rigidbody.MovePosition(m_Rigidbody.position + (knockbackForward * knockbackSpeed * Time.deltaTime));
         currentKnockbackTime -= Time.deltaTime;
+		origin = m_Rigidbody.position;
     }
 
     //Enables movement if any timers that prevent movement are not running
-    private void MovementLock()
+    private void LockMovementDK()
     {
         if (currentDashTime <= 0f && currentKnockbackTime <= 0f)
         {
@@ -206,4 +231,30 @@ public class PlayerMovement : MonoBehaviour
 
         return 1 - (currentKnockbackTime / dashTime);
     }
+
+	// initialising for shaking
+	public void StartShaking(){
+		origin = m_Rigidbody.position;
+		ShakeOn = true;
+	}
+
+	// shake the player
+	public void Shaking(){
+			float adjustedForce = shakeForce / 1000;
+			Vector3 randomLocation = new Vector3(Random.Range(-adjustedForce, adjustedForce), Random.Range(-adjustedForce, adjustedForce), Random.Range(-adjustedForce, adjustedForce));
+			m_Rigidbody.MovePosition(origin + randomLocation);
+	}
+
+	public void MoveToOrigin(){
+		m_Rigidbody.MovePosition(origin);
+	}
+
+	public void OffShake(){
+		ShakeOn = false;
+	}
+
+	public void LockMovement(bool state){
+			movementLock = state;
+	}
+
 }

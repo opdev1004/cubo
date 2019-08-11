@@ -6,13 +6,13 @@ using UnityEngine.SceneManagement;
 //Checks if the player meets the requirements of winning the game.
 public class PlayerWin : MonoBehaviour
 {
-    Rigidbody rigidbody;
+    Rigidbody rb;
     List<PlayerWin> winList;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         winList = new List<PlayerWin>();
         winList.AddRange(FindObjectsOfType<PlayerWin>());
     }
@@ -29,7 +29,7 @@ public class PlayerWin : MonoBehaviour
             }
 
             //Player is disqualified if they fall below the arena
-            if (rigidbody.position.y < -5f)
+            if (rb.position.y < -5f)
             {
                 Debug.Log(gameObject.name + " fell and was disqualified.");
                 Disqualify();

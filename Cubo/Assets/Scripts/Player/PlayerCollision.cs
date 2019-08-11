@@ -10,7 +10,7 @@ public class PlayerCollision : MonoBehaviour
 
     //Unity values for player
     BoxCollider m_BoxCollider;
-    Rigidbody rigidbody;
+    Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +18,7 @@ public class PlayerCollision : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         playerWin = GetComponent<PlayerWin>();
         m_BoxCollider = GetComponent<BoxCollider>();
-        rigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
     //Runs on collision with another object.
@@ -41,7 +41,7 @@ public class PlayerCollision : MonoBehaviour
     //checks for a collision in the immediate direction (for cube shaped objects) and returns the result.
     public bool CollisionAt(Vector3 direction)
     {
-        if (Physics.BoxCast(rigidbody.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), direction, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
+        if (Physics.BoxCast(rb.position, new Vector3((m_BoxCollider.size.x / 2.05f) * gameObject.transform.localScale.x, (m_BoxCollider.size.y / 2.05f) * gameObject.transform.localScale.y, (m_BoxCollider.size.z / 2.05f) * gameObject.transform.localScale.x), direction, Quaternion.LookRotation(Vector3.down), m_BoxCollider.size.y * 0.05f))
         {
             return true;
         }
