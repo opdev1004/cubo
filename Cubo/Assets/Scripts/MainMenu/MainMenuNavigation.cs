@@ -39,4 +39,11 @@ public class MainMenuNavigation : MonoBehaviour
         from.SetActive(false);
         to.SetActive(true);
     }
+
+	public void QuitGame()
+	{
+		Debug.Log("Quit Game");
+		Application.Quit();
+	}
+
 }
