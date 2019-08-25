@@ -1,6 +1,6 @@
 # Cubo
 
-This is open source 3D game project abouts robots fighting in arena.
+This is open source 3D game project about robots fighting in arena.
 
 
 [Click for playing web version!](https://opdev1004.github.io/cubo/)
